@@ -9,7 +9,8 @@ import {
   X, 
   Info, 
   Folder,
-  Tag
+  FileText,
+  Link
 } from "lucide-react"
 import data from "../data/osints.json"
 
@@ -112,7 +113,7 @@ export default function Home() {
   }
 
   // Render tree node
-  const renderNode = (node, level = 0, path = []) => {
+  const renderNode = (node, level = 0, path = [], isLastChild = false) => {
     const currentPath = [...path, node.name]
     const isExpanded = expandedNodes[node.name] || false
     const isFolder = node.type === "folder"
@@ -150,22 +151,37 @@ export default function Home() {
       >
         <div
           className={`flex items-center py-1.5 rounded transition-colors duration-150 ${
-            isSearchResult ? "bg-blue-900/40" : 
-            isHighlighted ? "bg-amber-900/40" : ""
+            isSearchResult ? "bg-black/20" : 
+            isHighlighted ? "bg-black/30" : ""
           }`}
-          style={{ paddingLeft: `${level * 16 + 10}px` }}
+          style={{ paddingLeft: `${level * 20 + 8}px` }}
         >
-          {isFolder && (
-            <button
-              onClick={() => toggleNode(node.name)}
-              className="text-neutral-500 flex items-center mr-1.5 hover:text-gray-300"
-              aria-label={isExpanded ? "Collapse folder" : "Expand folder"}
-            >
-              {isExpanded ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
-            </button>
+          {level > 0 && (
+            <div className="text-neutral-500 font-mono mr-1">
+              {isLastChild ? "└── " : "├── "}
+            </div>
           )}
 
-          {isFolder && <Folder size={14} className="text-neutral-500 mr-1.5" />}
+          {isFolder && (
+            <div className="relative">
+              <button
+                onClick={() => toggleNode(node.name)}
+                className="text-neutral-500 flex items-center mr-1.5 hover:text-white"
+                aria-label={isExpanded ? "Collapse folder" : "Expand folder"}
+              >
+                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              </button>
+              
+              {/* Blue dot indicator for search results */}
+              {containsSearchResult && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
+              )}
+            </div>
+          )}
+
+          {isFolder && <Folder size={15} className="text-neutral-400 mr-1.5" />}
+          {node.type === "url" && <Link size={14} className="text-neutral-400 mr-1.5" />}
+          {!isFolder && node.type !== "url" && <FileText size={14} className="text-neutral-400 mr-1.5" />}
 
           {node.type === "url" ? (
             <div className="flex items-center group">
@@ -173,35 +189,48 @@ export default function Home() {
                 href={node.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center text-neutral-400 hover:text-blue-400 text-xs"
+                className="flex items-center text-neutral-300 hover:text-white text-xs"
               >
                 <span>{node.name}</span>
-                <ExternalLink size={10} className="ml-1 text-blue-600 opacity-70 group-hover:opacity-100" />
+                <ExternalLink size={10} className="ml-1 text-neutral-500 opacity-70 group-hover:opacity-100" />
               </a>
 
               {indicators && indicators.map((indicator, i) => (
                 <span 
                   key={i}
-                  className="ml-1.5 bg-gray-900 text-neutral-500 text-[10px] px-0.5 rounded"
+                  className="ml-1.5 bg-black text-neutral-500 text-[10px] px-0.5 rounded"
                 >
                   {indicator}
                 </span>
               ))}
             </div>
           ) : (
-            <span
-              className={`${isSearchResult ? "text-blue-400 font-medium" : "text-neutral-300"} cursor-pointer text-xs`}
-              onClick={() => toggleNode(node.name)}
-            >
-              {node.name}
-            </span>
+            <div className="flex items-center">
+              <span
+                className={`${isSearchResult ? "text-white font-medium" : "text-neutral-300"} cursor-pointer text-xs`}
+                onClick={() => toggleNode(node.name)}
+              >
+                {node.name}
+              </span>
+              
+              {isFolder && (
+                <span className="ml-1.5 text-neutral-600 text-[10px]">
+                  {node.children ? `(${node.children.length})` : ""}
+                </span>
+              )}
+            </div>
           )}
         </div>
 
         {isFolder && isExpanded && node.children && (
-          <div>
-            {node.children.map((child) =>
-              renderNode(child, level + 1, currentPath)
+          <div className="relative">
+            {node.children.map((child, index) =>
+              renderNode(
+                child, 
+                level + 1, 
+                currentPath, 
+                index === node.children.length - 1
+              )
             )}
           </div>
         )}
@@ -210,14 +239,14 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#111111] text-white">
-      <header className="sticky top-0 z-10 bg-[#111111] border-b border-[#222222] px-3 py-4">
+    <div className="min-h-screen bg-black text-white">
+      <header className="sticky top-0 z-10 bg-black border-b border-neutral-800 px-3 py-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h1 className="text-xl font-medium tracking-tight">OSINT Framework</h1>
             <div className="relative w-full md:max-w-md">
               <Search 
-                className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-600" 
+                className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-600" 
                 size={16} 
               />
               <input 
@@ -225,12 +254,12 @@ export default function Home() {
                 placeholder="Search tools and resources..." 
                 value={searchTerm} 
                 onChange={(e) => handleSearch(e.target.value)} 
-                className="w-full pl-8 pr-8 py-1.5 bg-[#1a1a1a] border border-[#333333] rounded-md focus:outline-none focus:ring-1 focus:ring-[#444444] text-xs" 
+                className="w-full pl-8 pr-8 py-1.5 bg-black border border-neutral-800 rounded-md focus:outline-none focus:ring-1 focus:ring-neutral-700 text-xs" 
               />
               {searchTerm && (
                 <button
                   onClick={clearSearch}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-neutral-600 hover:text-neutral-400"
                 >
                   <X size={16} />
                 </button>
@@ -242,29 +271,29 @@ export default function Home() {
             <div className="mt-3">
               {searchResults.length > 0 ? (
                 <div>
-                  <div className="text-xs text-gray-500 mb-1.5">
+                  <div className="text-xs text-neutral-500 mb-1.5">
                     Found {searchResults.length} results
                   </div>
-                  <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1.5 bg-[#1a1a1a] rounded">
+                  <div className="flex flex-wrap gap-1.5 max-h-28 overflow-y-auto p-1.5 bg-black border border-neutral-800 rounded">
                     {searchResults.slice(0, 10).map((result, index) => (
                       <button
                         key={index}
                         onClick={() => expandPathToNode(result.path)}
-                        className="flex items-center bg-[#222222] hover:bg-[#333333] text-xs px-2 py-0.5 rounded"
+                        className="flex items-center bg-black hover:bg-neutral-900 border border-neutral-800 text-xs px-2 py-0.5 rounded"
                       >
                         <span className="truncate max-w-xs">{result.name}</span>
-                        <ChevronRight size={12} className="ml-1 text-gray-500" />
+                        <ChevronRight size={12} className="ml-1 text-neutral-500" />
                       </button>
                     ))}
                     {searchResults.length > 10 && (
-                      <span className="text-gray-600 text-xs px-2 py-0.5">
+                      <span className="text-neutral-600 text-xs px-2 py-0.5">
                         +{searchResults.length - 10} more
                       </span>
                     )}
                   </div>
                 </div>
               ) : (
-                <div className="mt-2 text-xs text-gray-600">
+                <div className="mt-2 text-xs text-neutral-600">
                   No results found for "{searchTerm}"
                 </div>
               )}
@@ -274,22 +303,53 @@ export default function Home() {
       </header>
 
       <main className="container mx-auto max-w-6xl px-3 py-4">
-        <div className="bg-[#1a1a1a] p-3 rounded-md mb-4 flex items-start gap-2">
-          <Info size={16} className="text-blue-500 mt-0.5 flex-shrink-0" />
-          <div className="text-xs text-gray-400 space-y-0.5">
-            <p><span className="bg-[#222222] text-[10px] px-1 rounded mr-1">T</span> Tool that must be installed and run locally</p>
-            <p><span className="bg-[#222222] text-[10px] px-1 rounded mr-1">D</span> Google Dork</p>
-            <p><span className="bg-[#222222] text-[10px] px-1 rounded mr-1">R</span> Requires registration</p>
-            <p><span className="bg-[#222222] text-[10px] px-1 rounded mr-1">M</span> URL with search term that must be edited manually</p>
+        <div className="bg-black border border-neutral-800 p-3 rounded-md mb-4 flex items-start gap-2">
+          <Info size={16} className="text-neutral-400 mt-0.5 flex-shrink-0" />
+          <div className="text-xs text-neutral-400 space-y-0.5">
+            <p><span className="bg-black border border-neutral-800 text-[10px] px-1 rounded mr-1">T</span> Tool that must be installed and run locally</p>
+            <p><span className="bg-black border border-neutral-800 text-[10px] px-1 rounded mr-1">D</span> Google Dork</p>
+            <p><span className="bg-black border border-neutral-800 text-[10px] px-1 rounded mr-1">R</span> Requires registration</p>
+            <p><span className="bg-black border border-neutral-800 text-[10px] px-1 rounded mr-1">M</span> URL with search term that must be edited manually</p>
+            <p className="mt-1.5 text-neutral-500">A <span className="inline-block w-2 h-2 bg-blue-500 rounded-full align-middle"></span> indicates folder contains a search match</p>
           </div>
         </div>
 
-        <div className="bg-[#1a1a1a] rounded-md p-3 shadow-md mb-4">
-          {renderNode(data)}
+        <div className="bg-black border border-neutral-800 rounded-md p-3 shadow-md mb-4">
+          <div className="file-tree font-mono">
+            {renderNode(data)}
+          </div>
+        </div>
+
+        <div className="bg-black border border-neutral-800 rounded-md p-3 shadow-md mb-4">
+          <h2 className="text-sm font-medium mb-2">Keyboard Shortcuts</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
+            <div className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 bg-black border border-neutral-800 rounded">↑</kbd>
+              <span className="text-neutral-400">Navigate up</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 bg-black border border-neutral-800 rounded">↓</kbd>
+              <span className="text-neutral-400">Navigate down</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 bg-black border border-neutral-800 rounded">→</kbd>
+              <span className="text-neutral-400">Expand folder</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 bg-black border border-neutral-800 rounded">←</kbd>
+              <span className="text-neutral-400">Collapse folder</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <kbd className="px-1.5 py-0.5 bg-black border border-neutral-800 rounded">Ctrl</kbd>
+              <span className="text-neutral-400">+</span>
+              <kbd className="px-1.5 py-0.5 bg-black border border-neutral-800 rounded">F</kbd>
+              <span className="text-neutral-400">Search</span>
+            </div>
+          </div>
         </div>
       </main>
 
-      <footer className="container mx-auto max-w-6xl px-3 py-4 text-center text-gray-600 text-xs">
+      <footer className="container mx-auto max-w-6xl px-3 py-4 text-center text-neutral-600 text-xs border-t border-neutral-900">
         <p>OSINT Framework - A curated collection of open source intelligence tools and resources</p>
       </footer>
     </div>
