@@ -1,17 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { 
-  ChevronRight, 
-  ChevronDown, 
-  ExternalLink, 
-  Search, 
-  X, 
-  Info, 
-  Folder,
-  FileText,
-  Link
-} from "lucide-react"
+import { ChevronRight, ChevronDown, ExternalLink, Search, X, Info, Folder, FileText, Link } from "lucide-react"
 import data from "../data/osints.json"
 
 export default function Home() {
@@ -21,12 +11,10 @@ export default function Home() {
   const [isSearching, setIsSearching] = useState(false)
   const [highlightedPath, setHighlightedPath] = useState([])
 
-  // Initialize with the main OSINT Framework node expanded
   useEffect(() => {
-    setExpandedNodes({ "OSINT Framework": true })
+    setExpandedNodes({ "OSINTs": true })
   }, [])
 
-  // Handle node expansion/collapse
   const toggleNode = (nodeName) => {
     setExpandedNodes((prev) => ({
       ...prev,
@@ -34,7 +22,6 @@ export default function Home() {
     }))
   }
 
-  // Auto-expand parent nodes when clicking on a search result
   const expandPathToNode = (path) => {
     const newExpandedNodes = { ...expandedNodes }
     path.forEach((nodeName) => {
@@ -43,13 +30,11 @@ export default function Home() {
     setExpandedNodes(newExpandedNodes)
     setHighlightedPath(path)
 
-    // Reset highlight after a delay
     setTimeout(() => {
       setHighlightedPath([])
     }, 2000)
   }
 
-  // Handle search functionality
   const handleSearch = (term) => {
     setSearchTerm(term)
 
@@ -65,7 +50,6 @@ export default function Home() {
     const searchInNode = (node, path = []) => {
       const currentPath = [...path, node.name]
 
-      // Check if the node matches the search term
       if (node.name.toLowerCase().includes(term.toLowerCase())) {
         results.push({ 
           ...node, 
@@ -74,7 +58,6 @@ export default function Home() {
         })
       }
 
-      // Search in children if they exist
       if (node.children) {
         node.children.forEach((child) => searchInNode(child, currentPath))
       }
@@ -82,7 +65,6 @@ export default function Home() {
 
     searchInNode(data)
 
-    // Sort results: exact matches first, then by path length
     results.sort((a, b) => {
       if (a.isExactMatch && !b.isExactMatch) return -1
       if (!a.isExactMatch && b.isExactMatch) return 1
@@ -98,7 +80,6 @@ export default function Home() {
     setIsSearching(false)
   }
 
-  // Check if a folder contains any search result
   const folderContainsSearchResult = (node) => {
     if (!isSearching || !searchTerm) return false
 
@@ -112,7 +93,6 @@ export default function Home() {
     return false
   }
 
-  // Render tree node
   const renderNode = (node, level = 0, path = [], isLastChild = false) => {
     const currentPath = [...path, node.name]
     const isExpanded = expandedNodes[node.name] || false
@@ -120,7 +100,6 @@ export default function Home() {
     const containsSearchResult = isFolder && folderContainsSearchResult(node)
     const isHighlighted = highlightedPath.includes(node.name)
 
-    // Filter out nodes not in search results when searching
     if (isSearching && searchResults.length > 0) {
       const isInResultPath = searchResults.some((result) =>
         result.path.includes(node.name) || currentPath.some((p) => result.path.includes(p))
@@ -128,7 +107,6 @@ export default function Home() {
       if (!isInResultPath) return null
     }
 
-    // Get indicators for URL nodes
     const getIndicator = () => {
       if (node.type !== "url") return null
 
@@ -171,8 +149,7 @@ export default function Home() {
               >
                 {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
               </button>
-              
-              {/* Blue dot indicator for search results */}
+        
               {containsSearchResult && (
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></div>
               )}
@@ -243,7 +220,7 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-black border-b border-neutral-800 px-3 py-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h1 className="text-xl font-medium tracking-tight">OSINT Framework</h1>
+            <h1 className="text-xl font-medium tracking-tight">OSINTs</h1>
             <div className="relative w-full md:max-w-md">
               <Search 
                 className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-600" 
@@ -310,7 +287,7 @@ export default function Home() {
             <p><span className="bg-black border border-neutral-800 text-[10px] px-1 rounded mr-1">D</span> Google Dork</p>
             <p><span className="bg-black border border-neutral-800 text-[10px] px-1 rounded mr-1">R</span> Requires registration</p>
             <p><span className="bg-black border border-neutral-800 text-[10px] px-1 rounded mr-1">M</span> URL with search term that must be edited manually</p>
-            <p className="mt-1.5 text-neutral-500">A <span className="inline-block w-2 h-2 bg-blue-500 rounded-full align-middle"></span> indicates folder contains a search match</p>
+            <p className="mt-1.5 text-neutral-500">A  <span className="inline-block w-2 h-2 bg-blue-500 rounded-full align-middle"></span>  indicates folder contains a search match</p>
           </div>
         </div>
 
@@ -350,7 +327,7 @@ export default function Home() {
       </main>
 
       <footer className="container mx-auto max-w-6xl px-3 py-4 text-center text-neutral-600 text-xs border-t border-neutral-900">
-        <p>OSINT Framework - A curated collection of open source intelligence tools and resources</p>
+        <p>OSINTs - A curated collection of open source intelligence tools and resources</p>
       </footer>
     </div>
   )
