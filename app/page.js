@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ChevronRight, ChevronDown, ExternalLink, Search, X, Info } from "lucide-react"
-import data from "@/data/osints.json"
+import data from "./data/osints.json"
 
 export default function Home() {
   const [expandedNodes, setExpandedNodes] = useState({})
