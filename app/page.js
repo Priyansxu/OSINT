@@ -297,7 +297,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bg-black border border-neutral-800 rounded-md p-3 shadow-md mb-4">
+        <div className="hidden md:block bg-black border border-neutral-800 rounded-md p-3 shadow-md mb-4">
           <h2 className="text-sm font-medium mb-2">Keyboard Shortcuts</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-xs">
             <div className="flex items-center gap-1">
