@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { ChevronRight, ChevronDown, ExternalLink, Search, X, Info, Folder, FileText, Link } from "lucide-react"
-import data from "../data/osints.json"
+import data from "../data/osint.json"
 
 export default function Home() {
   const [expandedNodes, setExpandedNodes] = useState({})
@@ -12,7 +12,7 @@ export default function Home() {
   const [highlightedPath, setHighlightedPath] = useState([])
 
   useEffect(() => {
-    setExpandedNodes({ "OSINTs": true })
+    setExpandedNodes({ "OSINT": true })
   }, [])
 
   const toggleNode = (nodeName) => {
@@ -220,7 +220,7 @@ export default function Home() {
       <header className="sticky top-0 z-10 bg-black border-b border-neutral-800 px-3 py-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h1 className="text-xl font-medium tracking-tight">OSINTs</h1>
+            <h1 className="text-xl font-medium tracking-tight">OSINT Tools</h1>
             <div className="relative w-full md:max-w-md">
               <Search 
                 className="absolute left-2 top-1/2 -translate-y-1/2 text-neutral-600" 
@@ -327,7 +327,7 @@ export default function Home() {
       </main>
 
       <footer className="container mx-auto max-w-6xl px-3 py-4 text-center text-neutral-600 text-xs border-t border-neutral-900">
-        <p>OSINTs - A curated collection of open source intelligence tools and resources</p>
+        <p>OSINT Tools - A curated collection of open source intelligence tools and resources</p>
       </footer>
     </div>
   )
