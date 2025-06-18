@@ -1,5 +1,6 @@
 "use client"
 
+import Head from "next/head"
 import { useState, useEffect } from "react"
 import { ChevronRight, ChevronDown, ExternalLink, Search, X, Info, Folder, FileText, Link } from "lucide-react"
 import data from "../data/osint.json"
@@ -217,6 +218,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
+      <Head>
+        <title>OSINT Tools</title>
+        <meta name="description" content="A curated collection of open source intelligence tools and resources." />
+        <meta name="msvalidate.01" content="EC331220C3A4E816AE012EA019B79EAE" />
+      </Head>
       <header className="sticky top-0 z-10 bg-black border-b border-neutral-800 px-3 py-4">
         <div className="container mx-auto max-w-6xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
