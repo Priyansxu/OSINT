@@ -38,11 +38,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <Head>
+      <head>
         <title>OSINT Tools</title>
         <meta name="description" content="A curated collection of open source intelligence tools and resources." />
         <meta name="msvalidate.01" content="EC331220C3A4E816AE012EA019B79EAE" />
-      </Head>
+      </head>
       <body className={`${montserrat.className} transition-colors duration-300`}>
         {children}
       </body>
