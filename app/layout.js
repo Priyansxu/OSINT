@@ -1,5 +1,4 @@
 import React from "react";
-import Head from "next/head"
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 
