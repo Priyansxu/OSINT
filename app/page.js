@@ -1,5 +1,6 @@
 "use client"
 
+import Head from "next/head"
 import { useState, useEffect } from "react"
 import { ChevronRight, ChevronDown, ExternalLink, Search, X, Info, Folder, FileText, Link } from "lucide-react"
 import data from "../data/osint.json"
@@ -216,6 +217,11 @@ export default function Home() {
   }
 
   return (
+  <>
+  <Head>
+     <title>OSINT Tools</title>
+     <meta name="description" content="A curated collection of open source intelligence tools and resources" />
+   </Head>
     <div className="min-h-screen bg-black text-white">
       <header className="sticky top-0 z-10 bg-black border-b border-neutral-800 px-3 py-4">
         <div className="container mx-auto max-w-6xl">
@@ -330,5 +336,6 @@ export default function Home() {
         <p>OSINT Tools - A curated collection of open source intelligence tools and resources</p>
       </footer>
     </div>
+   </>
   )
 }
