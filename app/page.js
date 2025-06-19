@@ -4,6 +4,11 @@ import { useState, useEffect } from "react"
 import { ChevronRight, ChevronDown, ExternalLink, Search, X, Info, Folder, FileText, Link } from "lucide-react"
 import data from "../data/osint.json"
 
+export const metadata = {
+  title: 'OSINT Tools',
+  description: 'A curated collection of open source intelligence tools and resources'
+};
+
 export default function Home() {
   const [expandedNodes, setExpandedNodes] = useState({})
   const [searchTerm, setSearchTerm] = useState("")
