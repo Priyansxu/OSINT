@@ -6,7 +6,7 @@ import data from "../data/osint.json"
 
 export const metadata = {
   title: 'OSINT Tools',
-  description: 'A curated collection of open source intelligence tools and resources'
+  description: 'A curated collection of open source intelligence tools and resources',
 };
 
 export default function Home() {
