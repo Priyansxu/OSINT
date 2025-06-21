@@ -223,7 +223,6 @@ export default function Home() {
      <meta name="description" content="A curated collection of open source intelligence tools and resources" />
      <link rel="icon" type="image/svg+xml" href="./icon.svg" />
      <meta property="og:image" content="https://osint.zone.id/icon.svg" />
-     <meta property="og:image:alt" content="ICON" />
    </Head>
     <div className="min-h-screen bg-black text-white">
       <header className="sticky top-0 z-10 bg-black border-b border-neutral-800 px-3 py-4">
