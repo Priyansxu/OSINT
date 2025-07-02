@@ -3,7 +3,7 @@ export default function sitemap() {
     {
       url: 'https://osint.zone.id',
       lastModified: new Date(),
-      changeFrequency: 'weekly',
+      changeFrequency: 'daily',
       priority: 1,
     }
   ]
